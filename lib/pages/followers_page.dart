@@ -2,38 +2,30 @@ import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../api/github_api.dart';
 
-class FollowingPage extends StatefulWidget {
+class FollowersPage extends StatefulWidget {
   final User user;
-  const FollowingPage({required this.user});
+  const FollowersPage({required this.user});
 
   @override
-  State<FollowingPage> createState() => _FollowingPageState();
+  State<FollowersPage> createState() => _FollowersPageState();
 }
 
-class _FollowingPageState extends State<FollowingPage> {
+class _FollowersPageState extends State<FollowersPage> {
   final api = GitHubApi();
-  late Future<List<User>> _futureFollowings;
+  late Future<List<User>> _futureFollowings; // Renomeado para _futureFollowings
 
   @override
   void initState() {
-    _futureFollowings = api.getFollowing(widget.user.login);
+    _futureFollowings =
+        api.getFollowing(widget.user.login); // Alterado para getFollowing
     super.initState();
-  }
-
-  void _showFollowing(User user) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FollowingPage(user: user),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Following"),
+        title: const Text("Followers"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -86,15 +78,9 @@ class _FollowingPageState extends State<FollowingPage> {
                             backgroundImage: NetworkImage(user.avatarUrl),
                           ),
                           title: Text(user.login),
-                          trailing: GestureDetector(
-                            onTap: () {
-                              _showFollowing(
-                                  user); // Chame a função para navegar
-                            },
-                            child: const Text(
-                              "Following",
-                              style: TextStyle(color: Colors.blueAccent),
-                            ),
+                          trailing: const Text(
+                            "Following",
+                            style: TextStyle(color: Colors.blueAccent),
                           ),
                         );
                       }),
