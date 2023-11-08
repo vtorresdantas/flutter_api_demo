@@ -1,23 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:github_api_demo/api/github_api.dart';
-import 'package:github_api_demo/models/user.dart';
-import 'package:github_api_demo/pages/user_page.dart';
 
-class FollowingPage extends StatefulWidget {
+import '../api/github_api.dart';
+import '../models/user.dart';
+import 'user_page.dart';
+
+class FollowersPage extends StatefulWidget {
   final User user;
-  const FollowingPage(this.user);
+  const FollowersPage(this.user);
 
   @override
-  State<FollowingPage> createState() => _FollowingPageState();
+  State<FollowersPage> createState() => _FollowersPageState();
 }
 
-class _FollowingPageState extends State<FollowingPage> {
-  late Future<List<User>> _futureFollowing;
+class _FollowersPageState extends State<FollowersPage> {
+  late Future<List<User>> _futureFollowers;
+  late List<User> _followers = [];
 
   @override
   void initState() {
-    _futureFollowing = GithubApi().listFollowing(widget.user.login);
+    _futureFollowers = GithubApi().listFollowers(widget.user.login);
+    _carregarSeguidores();
     super.initState();
+  }
+
+  Future<void> _carregarSeguidores() async {
+    final followers = await _futureFollowers;
+    setState(() {
+      _followers = followers;
+    });
+  }
+
+  void _ordemAlfabetica() {
+    setState(() {
+      _futureFollowers =
+          GithubApi().listFollowers(widget.user.login, order: true);
+    });
   }
 
   @override
@@ -29,7 +46,7 @@ class _FollowingPageState extends State<FollowingPage> {
           Expanded(
               // Lista de usuários seguindo
               child: FutureBuilder<List<User>>(
-            future: _futureFollowing,
+            future: _futureFollowers,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
@@ -42,31 +59,31 @@ class _FollowingPageState extends State<FollowingPage> {
                 );
               }
 
-              var following = snapshot.data ?? [];
+              var followers = snapshot.data ?? [];
               return ListView.separated(
-                itemCount: following.length,
+                itemCount: followers.length,
                 itemBuilder: ((context, i) {
-                  var user = following[i];
+                  var follower = followers[i];
                   return ListTile(
                     leading: CircleAvatar(
-                      backgroundImage: NetworkImage(user.avatarUrl),
+                      backgroundImage: NetworkImage(follower.avatarUrl),
                     ),
-                    title: Text(user.login),
+                    title: Text(follower.login),
                     trailing: const Text(
-                      'Following',
+                      'Follower',
                       style: TextStyle(color: Colors.blueAccent),
                     ),
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => UserPage(user),
+                          builder: (context) => UserPage(follower),
                         ),
                       );
                     },
                   );
                 }),
                 separatorBuilder: (context, index) {
-                  return Divider();
+                  return const Divider();
                 },
               );
             },

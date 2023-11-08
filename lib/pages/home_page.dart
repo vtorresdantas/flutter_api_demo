@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:github_api_demo/api/github_api.dart';
-
-import 'following_page.dart';
+import 'package:github_api_demo/pages/user_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage();
@@ -11,7 +10,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final api = GitHubApi();
   final TextEditingController _controller = TextEditingController();
   bool isLoading = false;
   String? errorMessage;
@@ -58,13 +56,7 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.white.withOpacity(.1)),
                 child: TextField(
-                  onChanged: (value) {
-                    if (errorMessage != null) {
-                      setState(() {
-                        errorMessage = null;
-                      });
-                    }
-                  },
+                  onChanged: (value) {},
                   controller: _controller,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
@@ -90,12 +82,26 @@ class _HomePageState extends State<HomePage> {
                           strokeWidth: 2,
                         )
                       : const Text(
-                          'Get Your Following Now',
+                          'Get public user information',
                           style: TextStyle(color: Colors.white),
                         ),
                 ),
-                onPressed: () {
-                  _getUser();
+                onPressed: () async {
+                  final userName = _controller.text;
+                  final api = GithubApi();
+                  final user = await api.findUser(userName);
+                  if (user == null) {
+                    setState(() {
+                      //errorMessage é uma variável global, vinculada ao "errorText" do widget TextField
+                      errorMessage = "Informe um usuário";
+                    });
+                  } else {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => UserPage(user),
+                      ),
+                    );
+                  }
                 },
               )
             ]),
@@ -103,33 +109,5 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
-
-  _getUser() {
-    if (_controller.text.isEmpty) {
-      setState(() {
-        errorMessage = "Informe o nome de usuário";
-      });
-    } else {
-      setState(() {
-        isLoading = true;
-      });
-      api.findUser(_controller.text).then((user) {
-        setState(() {
-          isLoading = false;
-        });
-
-        if (user != null) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => FollowingPage(user: user)));
-        } else {
-          setState(() {
-            errorMessage = "Usuário não encontrado";
-          });
-        }
-      });
-    }
   }
 }
