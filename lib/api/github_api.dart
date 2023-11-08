@@ -6,7 +6,7 @@ import '../models/user.dart';
 
 class GitHubApi {
   final String baseUrl = 'https://api.github.com/';
-  final String token = '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';
+  final String token = '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';
 
   Future<User?> findUser(String userName) async {
     final url = '${baseUrl}users/$userName';
