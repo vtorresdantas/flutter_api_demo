@@ -26,6 +26,24 @@ class RepositoryDetalhePage extends StatelessWidget {
                 ? const Text('Sem linguagem.')
                 : Text(repository.language!),
           ),
+          ListTile(
+            title: const Text('Data de criação: '),
+            subtitle: repository.created == null
+                ? const Text('Sem data de criação.')
+                : Text(repository.created!),
+          ),
+          ListTile(
+            title: const Text('Data de atualização: '),
+            subtitle: repository.updated == null
+                ? const Text('Sem data de atualização.')
+                : Text(repository.updated!),
+          ),
+          ListTile(
+            title: const Text('Data de envio: '),
+            subtitle: repository.pushed == null
+                ? const Text('Sem data de envio.')
+                : Text(repository.pushed!),
+          ),
         ])));
   }
 }
