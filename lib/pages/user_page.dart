@@ -72,10 +72,42 @@ class _UserPageState extends State<UserPage> {
                   SizedBox(
                     width: 120,
                     height: 120,
-                    child: CircleAvatar(
-                      radius: 50.0,
-                      backgroundColor: Colors.blue,
-                      backgroundImage: NetworkImage(widget.user.avatarUrl),
+                    child: InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Informações do Usuário'),
+                              content: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                      'Nome Completo: ${widget.user.name.isNotEmpty ? widget.user.name : 'Sem informação'}'),
+                                  Text(
+                                      'Email: ${widget.user.email.isNotEmpty ? widget.user.email : 'Sem informação'}'),
+                                  Text(
+                                      'Localização: ${widget.user.location.isNotEmpty ? widget.user.location : 'Sem informação'}'),
+                                ],
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text('Fechar'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: CircleAvatar(
+                        radius: 50.0,
+                        backgroundColor: Colors.blue,
+                        backgroundImage: NetworkImage(widget.user.avatarUrl),
+                      ),
                     ),
                   ),
                   const SizedBox(
@@ -175,7 +207,6 @@ class _UserPageState extends State<UserPage> {
                     },
                   ),
                 ),
-                //Tab(icon: Icon(Icons.directions_bike)),
               ],
             ),
             Expanded(
@@ -184,7 +215,6 @@ class _UserPageState extends State<UserPage> {
                   FollowingPage(widget.user),
                   FollowersPage(widget.user),
                   RepositoryPage(widget.user),
-                  //Icon(Icons.directions_bike),
                 ],
               ),
             ),

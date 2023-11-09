@@ -1,11 +1,3 @@
-// https://api.github.com/users/octocat
-// https://api.github.com/users/octocat/following
-
-// https://api.github.com/users/octocat
-// https://api.github.com/users/octocat/following
-
-//https://gist.github.com/dcvieira/c6761dae253759d2f788dc552d35cb8d
-
 import 'dart:convert';
 
 import 'package:github_api_demo/models/repository.dart';
@@ -15,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class GithubApi {
   final String baseUrl = 'https://api.github.com/';
-  final String token = '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';
+  final String token = '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';
 
   Future<User?> findUser(String userName) async {
     final url = '${baseUrl}users/$userName';
